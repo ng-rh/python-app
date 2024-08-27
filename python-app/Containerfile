@@ -1,19 +1,30 @@
 # Use OpenShift Python Builder image as base
+FROM registry.access.redhat.com/ubi8/python-38 AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy the requirements file and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
+COPY . .
+
+# Create a new stage for the final image
 FROM registry.access.redhat.com/ubi8/python-38
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Copy the installed packages from the builder stage
+COPY --from=builder /usr/local /usr/local
 
-# Copy the rest of the application code
-COPY . .
-
-# Set the command to run the application
-CMD ["python", "app.py"]
+# Copy the application code from the builder stage
+COPY --from=builder /app /app
 
 # Expose the port your application runs on
 EXPOSE 8080
 
+# Set the command to run the application
+CMD ["python", "app.py"]

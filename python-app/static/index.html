@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Counter App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #444;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            background-color: #007bff;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .info {
+            margin-top: 20px;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+    </style>
+    <script>
+        async function fetchCount() {
+            try {
+                const response = await fetch('/count');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                document.getElementById('count').innerText = data.count;
+            } catch (error) {
+                console.error('Error fetching count:', error);
+                document.getElementById('count').innerText = 'Error';
+            }
+        }
+
+        async function incrementCount() {
+            const incrementBy = parseInt(document.getElementById('increment-value').value, 10) || 1;
+            try {
+                const response = await fetch('/increment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ increment_by: incrementBy })
+                });
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                document.getElementById('count').innerText = data.count;
+            } catch (error) {
+                console.error('Error incrementing count:', error);
+                document.getElementById('count').innerText = 'Error';
+            }
+        }
+
+        async function fetchInfo() {
+            try {
+                const response = await fetch('/info');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                document.getElementById('app-info').innerHTML = `
+                    <p><strong>App Name:</strong> ${data.app_name}</p>
+                    <p><strong>Version:</strong> ${data.version}</p>
+                    <p><strong>Description:</strong> ${data.description}</p>
+                `;
+            } catch (error) {
+                console.error('Error fetching app info:', error);
+                document.getElementById('app-info').innerHTML = '<p>Error loading app info.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCount();
+            fetchInfo();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Flask Counter App</h1>
+        <p>Current count: <span id="count">Loading...</span></p>
+        <input type="number" id="increment-value" placeholder="Increment by" />
+        <button onclick="incrementCount()">Increment Count</button>
+        <div class="info" id="app-info">Loading app info...</div>
+    </div>
+</body>
+</html>
