@@ -13,41 +13,20 @@ Create a directory for your application:
 
 Create a simple Python application (app.py):
 
-    from flask import Flask
-    app = Flask(__name__)
+    refere app.py
 
-    @app.route('/')
-    def hello():
-        return "Hello, OpenShift!"
+Create a frontend page (static/index.html):
 
-    if __name__ == '__main__':
-        app.run(host='0.0.0.0', port=8080)
+    refer static/index.html
 
 Create a requirements.txt file for your application:
 
-    Flask==2.0.1
-    Werkzeug==2.0.1
+    Flask==2.2.3
+    Werkzeug==2.3.0
 
 Create a Containerfile:
-
-    # Use OpenShift Python Builder image as base
-    FROM registry.access.redhat.com/ubi8/python-38
-
-    # Set working directory
-    WORKDIR /app
-
-    # Install dependencies
-    COPY requirements.txt .
-    RUN pip install -r requirements.txt
-
-    # Copy the rest of the application code
-    COPY . .
-
-    # Set the command to run the application
-    CMD ["python", "app.py"]
-
-    # Expose the port your application runs on
-    EXPOSE 8080
+    
+    refer Containerfile
 
 ### Step3: Configure Podman to trust the certificate
 
