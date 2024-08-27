@@ -68,10 +68,12 @@ Build the Podman Image:
 
 Push the Image to OpenShift Internal Registry:
 
-    podman login -u kubeadmin -p $(oc whoami -t default-route-openshift-image-registry.apps-crc.testing 
+    podman login -u kubeadmin -p $(oc whoami -t) default-route-openshift-image-registry.apps-crc.testing --tls-verify=false 
 
     podman tag python-app:latest default-route-openshift-image-registry.apps-crc.testing/demo/python-app
  
+    podman push default-route-openshift-image-registry.apps-crc.testing/demo/python-app
+
 
 
 
